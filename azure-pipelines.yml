@@ -29,7 +29,7 @@ variables:
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: '9157bf98-df3a-495a-89bf-451c9cb4d572'
   imageRepository: 'aksworkshop'
-  containerRegistry: 'msworkshops.azurecr.io'
+  containerRegistry: 'acraks189441.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   tag: '$(Build.BuildNumber)'
   sourceVersion: '$(Build.SourceVersion)'
@@ -64,24 +64,3 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
-
-- stage: Deploy
-  displayName: Deploy to slot
-  jobs:
-  - job: Deploy
-    displayName: Deploy job
-    pool:
-      vmImage: $(vmImageName)
-    steps:
-    - task: AzureRmWebAppDeployment@4
-      inputs:
-        ConnectionType: 'AzureRM'
-        azureSubscription: 'AKS Workshop'
-        appType: 'webAppContainer'
-        WebAppName: 'aksworkshop'
-        deployToSlotOrASE: true
-        ResourceGroupName: 'workshops'
-        SlotName: '$(sourceBranch)'
-        DockerNamespace: '$(containerRegistry)'
-        DockerRepository: '$(imageRepository)'
-        DockerImageTag: '$(tag)'
